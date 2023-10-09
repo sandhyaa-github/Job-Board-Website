@@ -82,9 +82,19 @@ WSGI_APPLICATION = 'job_board.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'jobboard_db1.sqlite3',
+        'NAME': BASE_DIR / 'jobboard.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'jobboard',
+#         'USER': 'root',
+#         'PASSWORD': 'sandhya#22',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 
 
 # Password validation
@@ -141,4 +151,4 @@ REST_FRAMEWORK = {
     ),
 }
 
-AUTH_USER_MODEL = 'user.UserProfile'
+# AUTH_USER_MODEL = 'user'

@@ -1,48 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
-
-from job_board import settings
-
-class UserProfileManager(BaseUserManager):
-    def create_user(self, username, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError(_('The Email field must be set'))
-        email = self.normalize_email(email)
-        user = self.model(username=username, email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, username, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError(_('Superuser must have is_staff=True.'))
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_('Superuser must have is_superuser=True.'))
-
-        return self.create_user(username, email, password, **extra_fields)
-
-class UserProfile(AbstractUser):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_profile")
-    bio = models.TextField(blank=True)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
     current_address = models.CharField(max_length=120, blank=True)
     dob = models.DateField(blank=True, null=True)
     photo = models.ImageField(upload_to='profile_photos/', blank=True)
     is_applicant = models.BooleanField(default=False)
     is_employer = models.BooleanField(default=False)
-    # REQUIRED_FIELDS = ['email']
-
-    # objects = UserProfileManager()
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+# Connect the signal handler to the User model
+post_save.connect(create_user_profile, sender=User)
 
 class EmployerProfile(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name="employer_profile")
@@ -54,4 +34,4 @@ class EmployerProfile(models.Model):
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+        return self.company_name
