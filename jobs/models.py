@@ -24,7 +24,7 @@ class JobCategory(models.Model):
 class JobListing(models.Model):
     title = models.CharField(max_length=200)
     company_name = models.ForeignKey(EmployerProfile, on_delete=models.CASCADE, related_name="posted_by")
-    category = models.ForeignKey(JobCategory, on_delete=models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(JobCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_category')
     location = models.CharField(max_length=100)
     description = models.TextField()
     requirements = models.TextField()
@@ -41,8 +41,8 @@ class JobListing(models.Model):
         return self.title
 
 class JobApplication(models.Model):
-    applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    job_listing = models.ForeignKey(JobListing, on_delete=models.CASCADE)
+    applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='applicant_profile')
+    job_listing = models.ForeignKey(JobListing, on_delete=models.CASCADE, related_name='jobs')
     resume = models.FileField(upload_to='job_applications/')
     cover_letter = models.TextField()
     applied_at = models.DateTimeField(auto_now_add=True)
