@@ -1,7 +1,6 @@
 from django.db import models
 
-from user.models import UserProfile, EmployerProfile
-from django.utils.text import slugify
+from user.models import Profile, EmployerProfile
 
 
 STATUS_TYPES = [
@@ -13,13 +12,15 @@ STATUS_TYPES = [
     ('selected','Selected'),
     ('not selected', 'Not selected')
 ]
-# Create your models here.
+
+
 class JobCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
+
 
 class JobListing(models.Model):
     title = models.CharField(max_length=200)
@@ -29,7 +30,7 @@ class JobListing(models.Model):
     description = models.TextField()
     requirements = models.TextField()
     salary = models.DecimalField(max_digits=10, decimal_places=2)
-    posted_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    posted_by = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=True)
 
@@ -40,8 +41,9 @@ class JobListing(models.Model):
     def __str__(self):
         return self.title
 
+
 class JobApplication(models.Model):
-    applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='applicant_profile')
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='applicant_profile')
     job_listing = models.ForeignKey(JobListing, on_delete=models.CASCADE, related_name='jobs')
     resume = models.FileField(upload_to='job_applications/')
     cover_letter = models.TextField()

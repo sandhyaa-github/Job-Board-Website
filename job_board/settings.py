@@ -15,6 +15,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT = os.environ.get('ENV_PROJECT', os.path.basename(BASE_DIR))
 
 
 # Quick-start development settings - unsuitable for production
@@ -79,12 +80,12 @@ WSGI_APPLICATION = 'job_board.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'jobboard.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'jobboard2.sqlite3',
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -95,6 +96,19 @@ DATABASES = {
 #         'PORT': '',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE':   'django.db.backends.postgresql_psycopg2',
+        'NAME':     os.environ.get('ENV_DATABASE', PROJECT + '_' + os.environ['ENV_SITE']).lower(),
+        'USER':     os.environ.get('ENV_DATABASE_USER', 'root'),
+        'PASSWORD': os.environ.get('ENV_DATABASE_PASSWORD', ''),
+        'HOST':     os.environ.get('ENV_DATABASE_HOST', 'localhost'),
+        'PORT':     os.environ.get('ENV_DATABASE_PORT', ''),
+        'OPTIONS':  {
+        },
+    }
+}
 
 
 # Password validation
@@ -150,5 +164,3 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',  # Token authentication
     ),
 }
-
-# AUTH_USER_MODEL = 'user'

@@ -1,19 +1,19 @@
 # user/serializers.py
-
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import UserProfile
+from .models import Profile
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserProfile
-        fields = ('username', 'email', 'password', 'is_applicant', 'is_employer')
+        model = User
+        fields = ('username', 'email', 'password')
 
-    def create(self, validated_data):
-        user = UserProfile.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-            is_applicant=validated_data.get('is_applicant', False),
-            is_employer=validated_data.get('is_employer', False),
-        )
-        return user
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    user = UserRegistrationSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'user', 'bio', 'photo', 'dob',
+                  'is_applicant', 'is_employer')
