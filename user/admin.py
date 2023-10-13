@@ -6,10 +6,10 @@ from user.models import Profile, EmployerProfile
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'bio', 'photo',
+    list_display = ['user', 'bio', 'photo', 'active',
                     'dob', 'is_applicant', 'is_employer']
     search_fields = ['id', 'user', 'is_applicant', 'is_employer']
-    list_filter = ['user', 'is_applicant', 'is_employer']
+    list_filter = ['user', 'is_applicant', 'is_employer', 'active']
 
     class Meta:
         model = Profile
