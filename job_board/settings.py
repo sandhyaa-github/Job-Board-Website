@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'user',
     'payment',
     'jobs',
-    'rest_framework',
     'rest_framework.authtoken',
 ]
 
